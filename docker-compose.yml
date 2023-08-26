@@ -1,0 +1,5 @@
+services:
+  vectordb:
+    image: "ankane/pgvector"
+    environment:
+      - POSTGRES_PASSWORD=test
