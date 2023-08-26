@@ -40,14 +40,16 @@ Base.metadata.create_all(engine)
 session = Session(engine)
 
 def embedd_chunks(chunks: list[Chunk]):
-    model = SentenceTransformer('BAAI/bge-large-en')
+    model = SentenceTransformer('BAAI/bge-large-zh')
+    # model = SentenceTransformer('BAAI/bge-large-en')
     embeddings = model.encode([chunk['chunk'] for chunk in chunks])
     documents = [dict(chunk=chunks[i]['chunk'], chunk_location_metadadata=chunks[i]['chunk_location_metadadata'], embedding=embedding) for i, embedding in enumerate(embeddings)]
     session.execute(insert(Document), documents)
     session.commit()
 
 def query_chunks(query: str):
-    model = SentenceTransformer('BAAI/bge-large-en')
+    model = SentenceTransformer('BAAI/bge-large-zh')
+    # model = SentenceTransformer('BAAI/bge-large-en')
     embedding = model.encode(query)
     neighbors = session.scalars(select(Document).order_by(Document.embedding.cosine_distance(embedding)).limit(5))
     return neighbors
@@ -69,13 +71,14 @@ if __name__ == '__main__':
         session.commit()
 
         # extract chunks from pdf
-        sample = extract_text_from_pdf(args.pdf)
-        texts = get_splits(200, 20, sample)
+        sample, metadata = extract_text_from_pdf(args.pdf)
+        texts = get_splits(200, 20, sample, metadata)
 
-        embedd_chunks([Chunk(chunk=text.page_content, chunk_location_metadadata="") for text in texts])
+        embedd_chunks([Chunk(chunk=text.page_content, chunk_location_metadadata=text.metadata["page"]) for text in texts])
         docs = query_chunks(args.query)
         for neighbor in docs:
             print(neighbor.chunk)
+            print(f"page: {neighbor.chunk_location_metadadata}")
             
     elif args.query:
         docs = query_chunks(args.query)

@@ -4,13 +4,17 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Extracting Text from PDF
 def extract_text_from_pdf(file_path):
+    texts = []
+    metadata = []
     with open(file_path, 'rb') as file:
         pdf = PdfReader(file)
-        text = " ".join(page.extract_text() for page in pdf.pages)
-    return text
+        for i, page in enumerate(pdf.pages):
+            texts.append(page.extract_text())
+            metadata.append({"page": i+1})
+    return texts, metadata
 
 
-def get_splits(size, overlap, text):
+def get_splits(size, overlap, text, metadata):
     # Initialize the text splitter with custom parameters
     custom_text_splitter = RecursiveCharacterTextSplitter(
         # Set custom chunk size
@@ -20,7 +24,7 @@ def get_splits(size, overlap, text):
         length_function = len,
 
     )
-    return custom_text_splitter.create_documents([text])
+    return custom_text_splitter.create_documents(text, metadata)
 
 
 if __name__=="__main__":
