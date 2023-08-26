@@ -41,7 +41,6 @@ session = Session(engine)
 
 def embedd_chunks(chunks: list[Chunk]):
     model = SentenceTransformer('BAAI/bge-large-en')
-    print([chunk['chunk'] for chunk in chunks])
     embeddings = model.encode([chunk['chunk'] for chunk in chunks])
     documents = [dict(chunk=chunks[i]['chunk'], chunk_location_metadadata=chunks[i]['chunk_location_metadadata'], embedding=embedding) for i, embedding in enumerate(embeddings)]
     session.execute(insert(Document), documents)
@@ -73,8 +72,11 @@ if __name__ == '__main__':
         sample = extract_text_from_pdf(args.pdf)
         texts = get_splits(200, 20, sample)
 
-        embedd_chunks([Chunk(chunk=text, chunk_location_metadadata="") for text in texts])
-
+        embedd_chunks([Chunk(chunk=text.page_content, chunk_location_metadadata="") for text in texts])
+        docs = query_chunks(args.query)
+        for neighbor in docs:
+            print(neighbor.chunk)
+            
     elif args.query:
         docs = query_chunks(args.query)
         for neighbor in docs:
