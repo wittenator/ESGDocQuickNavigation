@@ -25,7 +25,7 @@ def get_splits(size, overlap, text):
 
 if __name__=="__main__":
     # Extract text from the PDF and split it into sentences
-    sample = extract_text_from_pdf("Brazil.pdf")
+    sample = extract_text_from_pdf("./data/Brazil.pdf")
     texts = get_splits(200, 20, sample)
     print(f"Sample: {texts[5]}")
 
