@@ -22,7 +22,7 @@
 - Why did you undertake it?
 
 ## Data
-- link to the pdf: https://beta.hackfoldr.org/g0v-hackath57n/https%253A%252F%252Fdocs.google.com%252Fspreadsheets%252Fd%252F1JarPBI46zjbHlNR9TjF1JJAFEzR2v3DESS6LXkkLKDU%252Fedit%2523gid%253D1
+- [pdf](https://drive.google.com/drive/folders/1RavfXeWt11NphnWjrhdaQ6o0NqBiapWM)
 
 
 ## Technologies Used
