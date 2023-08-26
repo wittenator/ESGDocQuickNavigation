@@ -1,3 +1,5 @@
+#! python3
+
 from pgvector.sqlalchemy import Vector
 from sentence_transformers import SentenceTransformer
 from sqlalchemy import create_engine, insert, select, text, Integer, String, Text
@@ -31,7 +33,6 @@ class Document(Base):
     embedding = mapped_column(Vector(1024))
     chunk_location_metadadata = mapped_column(Text)
 
-
 Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 session = Session(engine)
@@ -46,5 +47,29 @@ def query_chunks(query: str):
     model = SentenceTransformer('BAAI/bge-large-en')
     embedding = model.encode(query)
     neighbors = session.scalars(select(Document).order_by(Document.embedding.cosine_distance(embedding)).limit(5))
-    return neighbors.all()
+    return neighbors
+
+if __name__ == '__main__':
+
+    # cli interface for embedding chunks
+    import argparse
+    parser = argparse.ArgumentParser(description='Embed chunks')
+    # argument for pdf document as file path
+    parser.add_argument('--pdf', type=str, help='pdf file path', required=False)
+    parser.add_argument('--query', type=str, help='query', required=False)
+
+    args = parser.parse_args()
+
+    if args.pdf:
+        # delete last document from db
+        session.query(Document).delete()
+        session.commit()
+
+        # extract chunks from pdf
+        
+
+    elif args.query:
+        print(query_chunks(args.query))
+
+
 
