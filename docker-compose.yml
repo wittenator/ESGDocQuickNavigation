@@ -3,3 +3,5 @@ services:
     image: "ankane/pgvector"
     environment:
       - POSTGRES_PASSWORD=test
+    volumes:
+      - ./db/inital_schema.sql:/docker-entrypoint-initdb.d/1.sql
