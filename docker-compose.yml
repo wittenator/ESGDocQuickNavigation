@@ -2,6 +2,8 @@ services:
   vectordb:
     image: "ankane/pgvector"
     environment:
-      - POSTGRES_PASSWORD=test
-    volumes:
-      - ./db/inital_schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+    ports:
+      - "5432:5432"
